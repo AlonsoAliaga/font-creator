@@ -1,0 +1,340 @@
+/* Custom font for a clean look */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f4f8;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.container {
+    font-family: MinecraftBold, 'Inter', sans-serif;
+    background-color: #f0f4f8; /* Light gray background */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top */
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+
+    background-color: #ffffff; /* White background for the main card */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;
+    display: flex;
+    flex-direction: row; /* Horizontal layout for panels */
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px; /* Max width for larger screens */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+
+}
+.left-panel {
+    flex: 0 0 260px; /* Fixed width for character list */
+    background-color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    overflow-y: auto; /* Scroll for many characters */
+    max-height: 1050px; /* Limit height */
+    position: relative; /* For positioning the hover preview */
+}
+/* Character list grid container */
+#characterList {
+    display: grid;
+    grid-template-columns: repeat(5, 40px); /* Fixed 5 columns */
+    gap: 5px; /* Gap between buttons */
+}
+#specialCharacterList {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column for space */
+    gap: 5px;
+    margin-top: 10px; /* Some spacing from the main grid */
+}
+.right-panel {
+    flex: 1; /* Take remaining space */
+    min-width: 300px; /* Minimum width for right panel */
+    background-color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-x: auto; /* Allow horizontal scrolling if grid is too wide */
+}
+.character-button {
+    padding: 8px 12px;
+    background-color: #e2e8f0;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-weight: 500;
+    color: #475569;
+    white-space: nowrap; /* Prevent text wrapping inside button */
+}
+.character-button:hover {
+    background-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+.character-button.selected {
+    background-color: #4f46e5; /* Indigo for selected */
+    color: white;
+    box-shadow: 0 2px 5px rgba(79, 70, 229, 0.3);
+}
+.character-button.selected:hover {
+    background-color: #4338ca;
+}
+.pixel-grid {
+    display: grid;
+    border: 1px solid #cbd5e1;
+    background-color: #fefefe;
+    width: fit-content; /* Adjusts to content size */
+    margin: 0 auto; /* Center the grid */
+}
+.pixel-cell {
+    /* These will be overridden by JS for dynamic sizing */
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff; /* Empty pixel color */
+    cursor: pointer;
+    transition: background-color 0.05s ease; /* Faster transition for painting */
+}
+.pixel-cell.filled {
+    background-color: #4f46e5; /* Filled pixel color (indigo) */
+}
+.pixel-cell:hover {
+    opacity: 0.8;
+}
+.export-output, .import-input, #imageTextInput {
+    background-color: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'Fira Code', 'Cascadia Code', monospace; /* Monospace font for code */
+    font-size: 0.85rem;
+    white-space: pre-wrap; /* Preserve whitespace and wrap */
+    word-break: break-all; /* Break long words */
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%; /* Full width for textareas */
+}
+.action-button {
+    background-color: #3b82f6; /* Blue */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+}
+.action-button:hover {
+    background-color: #2563eb; /* Darker blue on hover */
+    transform: translateY(-1px);
+}
+.action-button:active {
+    transform: translateY(0);
+}
+.dim-control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.dim-button {
+    background-color: #64748b; /* Slate gray for dimension buttons */
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* Circular buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.dim-button:hover {
+    background-color: #475569;
+}
+.dim-value {
+    font-weight: 600;
+    color: #334155;
+    min-width: 30px;
+    text-align: center;
+}
+/* Hover Preview Styles */
+#hoverPreview {
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100; /* Ensure it's on top */
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    gap: 5px;
+    pointer-events: none; /* Allow mouse events to pass through to elements below */
+}
+#hoverPreview .preview-grid {
+    display: grid;
+    border: 1px solid #e2e8f0;
+    background-color: #fefefe;
+}
+#hoverPreview .preview-cell {
+    width: 15px; /* Smaller cells for preview */
+    height: 15px;
+    border: 0.5px solid #e2e8f0; /* Finer border */
+    background-color: #ffffff;
+}
+#hoverPreview .preview-cell.filled {
+    background-color: #4f46e5;
+}
+#hoverPreview .preview-char-name {
+    font-weight: 600;
+    color: #334155;
+    text-align: center;
+}
+/* Delete Button Specific Styling */
+#deleteDataButton {
+    background-color: #ef4444; /* Red for delete */
+    box-shadow: 0 2px 5px rgba(239, 68, 68, 0.3);
+}
+#deleteDataButton:hover {
+    background-color: #dc2626; /* Darker red on hover */
+}
+/* Image Output Container */
+#imageOutputContainer {
+    min-height: 100px; /* Minimum height for the container */
+    border: 1px dashed #cbd5e1;
+    background-color: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto; /* Allow scrolling for large images */
+    border-radius: 8px;
+}
+#imageOutputContainer canvas {
+    display: block; /* Remove extra space below canvas */
+    background-color: #ffffff; /* White background for the drawn image */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+/* Import Error Debugger */
+#importErrorDebug {
+    background-color: #fee2e2; /* Light red background */
+    border: 1px solid #ef4444; /* Red border */
+    color: #b91c1c; /* Dark red text */
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    display: none; /* Hidden by default */
+}
+.break {
+  flex-basis: 5%;
+}
+
+  .options {
+    font-size: 20px;
+    border: 2px solid #aaa;
+    border-radius: 30px;
+    padding: 20px 50px 20px 50px;
+    position: relative;
+    border-radius: 30px;
+    /* width: 200px; */
+  }
+  .rainbow {
+      position:relative;
+      background: linear-gradient(to right, #6666ff, #0099ff , #00ff00, #ff3399, #6666ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rainbow_animation 2s ease-in-out infinite;
+      background-size: 400% 100%;
+  }
+  @keyframes rainbow_animation {
+      0%,100% {
+          background-position: 0 0;
+      }
+  
+      50% {
+          background-position: 100% 0;
+      }
+  }
+  @font-face {
+     font-family: MinecraftRegular;
+     src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/assets/fonts/MinecraftRegular.otf);
+  }
+  @font-face {
+     font-family: MinecraftBold;
+     src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/assets/fonts/MinecraftBold.otf);
+  }
+  @font-face {
+     font-family: MinecraftItalic;
+     src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/assets/fonts/MinecraftItalic.otf);
+  }
+  @font-face {
+     font-family: MinecraftBoldItalic;
+     src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/assets/fonts/MinecraftBoldItalic.otf);
+  }
+  @font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 300;
+    src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/assets/fonts/Quicksand/300.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 500;
+    src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/assets/fonts/Quicksand/500.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 600;
+    src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/assets/fonts/Quicksand/600.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 700;
+    src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/generator/assets/fonts/Quicksand/700.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Quicksand';
+    font-style: regular;
+    font-display: swap;
+    font-weight: 400;
+    src: url(https://raw.githubusercontent.com/AlonsoAliaga/generator/main/assets/fonts/Quicksand/regular.ttf) format('truetype');
+  }
+  .minecraft {
+    font-family: MinecraftRegular;
+  }
+  .minecraftbold {
+    font-family: MinecraftBold;
+  }
+  .minecraftitalic {
+    font-family: MinecraftItalic;
+  }
+  .minecraftibold {
+    font-family: MinecraftBoldItalic;
+  }
+  .minecraftunderline {
+    text-decoration: underline;
+  }
+  .minecraftustrike {
+    text-decoration: underline line-through;
+  }
+  .minecraftstrike {
+    text-decoration: line-through;
+  }

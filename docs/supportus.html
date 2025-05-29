@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="shortcut icon" href="https://cdn.discordapp.com/emojis/791742603183259648.webp?size=96&quality=lossless" type="image/x-icon">
+  <title>Support us by watching some ads!</title>
+  <style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .adsbygoogle-slot {
+      display: block;
+      width: 100%;
+      height: 1px;  /* prácticamente invisible */
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div style="width: 100%;" id="content">
+    <button style="height: 80px;width: 100%;font-size: 20px;border-radius: 0px;background-color: #ff8d00;font-weight: bold;" class="darkbuttonboxes" id="support-button">Loading..</button>
+    <div class="adsbygoogle-slot"></div>
+    <p>▁▁▁▁▁▁▁▁▁▁</p>
+    <div class="adsbygoogle-slot"></div>
+    <p>▁▁▁▁▁▁▁▁▁▁</p>
+    <div class="adsbygoogle-slot"></div>
+    <p>▁▁▁▁▁▁▁▁▁▁</p>
+    <div class="adsbygoogle-slot"></div>
+    <p>▁▁▁▁▁▁▁▁▁▁</p>
+    <div class="adsbygoogle-slot"></div>
+    <p>▁▁▁▁▁▁▁▁▁▁</p>
+    <div class="adsbygoogle-slot"></div>
+    <p>▁▁▁▁▁▁▁▁▁▁</p>
+    <div class="adsbygoogle-slot"></div>
+    <p>▁▁▁▁▁▁▁▁▁▁</p>
+    <div class="adsbygoogle-slot"></div>
+    <p>▁▁▁▁▁▁▁▁▁▁</p>
+    <div class="adsbygoogle-slot"></div>
+  </div>
+  <script>
+    window.addEventListener('load', function() {
+      // Selecciona todos los marcadores de anuncios
+      document.querySelectorAll('.adsbygoogle-slot').forEach(function(slot) {
+        // Convierte cada <div> en un contenedor de AdSense
+        slot.classList.add('adsbygoogle');
+        slot.setAttribute('data-ad-format', 'auto');
+        slot.setAttribute('data-ad-client', 'ca-pub-5185973148525065');
+        slot.setAttribute('data-ad-slot', '');  // deja vacío para Auto Ads
+
+        // Inserta el anuncio
+        try {
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        } catch(e) {
+          console.warn('Error al push adsbygoogle:', e);
+        }
+      });
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5185973148525065"
+    crossorigin="anonymous"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5185973148525065",
+    //   enable_page_level_ads: true,
+      overlays: { bottom: true },          // banner “anchor” en la parte inferior :contentReference[oaicite:4]{index=4}
+      vignette: true                    // si quieres también intersticiales
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', initializeEditor);
+    function initializeEditor() {
+        const button = document.getElementById("support-button");
+        if(!button) return;
+        if(adBlockEnabled) {
+            button.innerText = `🚫 Disable AdBlock to unlock special features.`;
+        }
+        if (!window.opener) {
+            button.innerHTML = `⛔ How did you get here? Click here to return to our generator! ⛔`;
+            button.style.cursor = "pointer"
+            button.onclick = function(event) {
+                window.location = `https://alonsoaliaga.com/mc-textures`
+            }
+            return;
+        }
+        let time = 2;
+        let inter = setInterval(()=>{
+            if(time < 0) {
+                button.innerText = `🗝️ Click an ad below to unlock new features!`;
+                button.onclick = function(event) {
+                    button.onclick = function () {
+
+                    }
+                    button.innerText = `🔓 You have unlocked nothing!`;
+                    party();
+                    let times = 10
+                    let a = setInterval(()=>{
+                        if(times < 0) {
+                            clearInterval(a);
+                            return;
+                        }
+                        if(times >= 5) clap();
+                        customParty(["🔓","🗝️","👑"])
+                        times--;
+                    },250)
+                    let msgs = [
+                        ["7",`👍🏻 Seriously, thanks for your support.`],
+                        ["5",`🙄 I'm being serious.. Nothing else here..`],
+                        ["3",`😥 Please, don't look at me like that.`],
+                        ["6",`😊 I really appreciate your support!`],
+                        ["10", `🤨 Still here? Please leave..`],
+                        ["8",`😠 Seriously.. You won't leave right?`],
+                        ["4",`⛔ Well, good bye.`],
+                        ["2",`close`]
+                    ]
+                    let finalMsgs = {}
+                    let current = 0;
+                    for(let [additional,message] of msgs) {
+                        current = current + parseInt(additional);
+                        finalMsgs[current] = message;
+                    }
+                    console.log(finalMsgs)
+                    let seconds = 0;
+                    let b = setInterval(()=> {
+                        if(finalMsgs[seconds]) {
+                            let msg = finalMsgs[seconds];
+                            if(msg == `⛔ Well, good bye.`) {
+                                button.style.backgroundColor = '#b90303'
+                                button.style.color = '#ffffff'
+                            }
+                            if(msg == "close") {
+                                clap();
+                                clearInterval(b)
+                                window.close();
+                            }else{
+                                button.innerText = finalMsgs[seconds];
+                                party();
+                            }
+                        }
+                        seconds++;
+                    },1000);
+                }
+                clearInterval(inter)
+                return;
+            }
+            button.innerText = `⌛ Please wait ${time} seconds..`;
+            time--;
+        },1000);
+    }
+    function party(){
+      const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();
+      o.type='square';
+      o.frequency.setValueAtTime(500,a.currentTime);
+      g.gain.setValueAtTime(1,a.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.3);
+      o.connect(g).connect(a.destination);
+      o.start();o.stop(a.currentTime+0.3);
+    }
+    function clap(){
+      const a=new AudioContext(),b=a.createBuffer(1,a.sampleRate*0.3,a.sampleRate),
+            d=b.getChannelData(0);
+      for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+      const s=a.createBufferSource();s.buffer=b;
+      const f=a.createBiquadFilter();f.type='bandpass';f.frequency.value=1000;
+      const g=a.createGain();g.gain.setValueAtTime(1,a.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+0.3);
+      s.connect(f).connect(g).connect(a.destination);s.start();
+    }
+    function customParty(emojis = [], time = 0) {
+      const defaults = {
+        spread: 360,
+        ticks: 100,
+        gravity: 0,
+        decay: 0.94,
+        startVelocity: 30,
+      };
+      function shoot(particleCount = 10) {
+        confetti({
+          ...defaults,
+          particleCount: particleCount,
+          scalar: 2,
+          shapes: ["emoji"],
+          shapeOptions: {
+            emoji: {
+              value: emojis,
+            },
+          },
+        });
+      }
+      if(time != 0) {
+        const duration = time * 1 * 1000,
+          animationEnd = Date.now() + duration;
+        const interval = setInterval(function () {
+        	const timeLeft = animationEnd - Date.now();
+        	if (timeLeft <= 0) {
+        		return clearInterval(interval);
+        	}
+        	const particleCount = 25 * (timeLeft / duration);
+          shoot(particleCount);
+        },250);
+      }
+      shoot();
+    }
+  </script>
+  <script src="resources.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+</body>
+</html>

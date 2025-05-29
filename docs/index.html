@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="https://cdn.discordapp.com/emojis/791742603183259648.webp?size=96&quality=lossless" type="image/x-icon">
+    <link rel="stylesheet" href="./style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Creator | AlonsoAliaga Development</title>
+
+    <meta name="theme-color" content="#9a14ff"/>
+    <meta property="og:title" content="Font Creator | AlonsoAliaga Development">
+    <meta property="og:image" content="https://raw.githubusercontent.com/AlonsoAliaga/font-creator/main/assets/images/logo.png">
+    <meta property="og:description" content="">
+    <meta property="og:url" content="https://alonsoaliaga.github.io/index.html">
+    <meta property=og:type content=website/>
+    <meta property="og:site_name" content="Font Creator - AlonsoAliaga Development" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <h1 style="font-family: MinecraftBold;font-size: 30px;"><a href="https://alonsoaliaga.com/font-creator" rel="noopener" target="_blank">Font Creator</a></h1>
+            <h2 style="font-size: 20px; color: rgb(255, 71, 71)">Use Google Chrome or Opera for a better experience. Edge is reported as not compatible!</h2>
+            <div class="options" style="padding: 5px 10px; margin-bottom: 10px;font-size: 20px;">
+              <h2 class="rainbow" style="font-size:25px; color:transparent">What is this for?</h2>
+              This is a site to make it easy to create fonts for our rand new <a href="https://alonsoaliaga.com/mc-texture" rel="noopener" target="_blank">MC-Texture generator</a>!<br>
+              <h2 class="rainbow" style="font-size:25px; color:transparent">What is MC-Texture?</h2>
+              <a href="https://alonsoaliaga.com/mc-texture" rel="noopener" target="_blank">MC-Texture generator</a> is the new way to create textures for ranks easily!
+              <br><br>
+              <h2 style="font-size: 20px; color: rgb(255, 71, 71)">⚠️ This site was made specifically to create fonts for our site.</h2>
+              <!-- <span style="font-size: 17px;">
+                <b>⚠️ If you have cool ideas, suggest them in our <a href="https://alonsoaliaga.com/discord" rel="noopener" target="_blank">official discord server.</a></b><br>
+              </span> -->
+              <span style="font-size: 15px;display: flex;justify-content: center;align-items: center;">
+                <img style="height: 20px !important; display: inline;" height="12px" src="https://cdn-icons-png.flaticon.com/512/174/174861.png">&nbsp;If you found this tool useful, consider <a href="https://alonsoaliaga.com/donate" rel="noopener" target="_blank">making a donation</a> for our hard work. We appreciate it!
+                <!-- <b><img height="15px" src="https://raw.githubusercontent.com/AlonsoAliaga/mcpfp/main/assets/images/paypal_logo.png"> If you found this tool useful, consider <a href="https://alonsoaliaga.com/donate" rel="noopener" target="_blank">making a donation</a> for our hard work. We appreciate it!</b><br> -->
+              </span>
+            </div>
+            <span id="snackbar"><b>💎 Successfully Copied! 💎</b><br><span style="font-size: small;">Thanks for using our tool!</span></span>
+            <div id="bulk-progress-snackbar"><button style="font-size: 18px;font-family: MinecraftBold;padding: 5px 5px 5px 5px;" id="stop-bulk" onclick="stopBulk();">❌</button> <span id="bulk-text"></span></div>
+            <div id="unlock-secret-features-div" style="display: none;align-items: center;text-align: center;">
+              <div id="unlock-secret-features" style="background-color: #ff0000;color:#ffffff;display: flex;font-family: MinecraftBold;padding: 6px 12px;border-radius: 13px;outline: none;width: 600px;justify-content: center;" class="darkbuttonboxes">🧪 Unlocked secret features! 🧪</div>
+              <br><br><br>
+            </div>
+            <div style="display: inline-flex;align-items: center;">
+              <span style="font-family: MinecraftBold;">Site options:</span>&nbsp;
+              <div id="appearance" style="display: inline-block;font-family: MinecraftBold;padding: 5px 10px 5px 10px;" class="darkbuttonboxes">
+                <input type="checkbox" checked id="darkmode" onclick="toggleDarkmode();"></input>
+                <label for="darkmode" style="margin-bottom: 0px;margin-top: 0px;"> Dark Mode 👁‍🗨</label>
+              </div>&nbsp;<div id="unlock-features-div" style="display: inline-block;font-family: MinecraftBold;padding: 6px 12px;border-radius: 13px;outline: none;cursor: pointer" 
+                onclick="window.open('./supportus.html', '_blank');" class="darkbuttonboxes">
+                <input style="display: none;" type="checkbox" checked id="unlock-features"></input>
+                <label for="unlock-features" style="margin-bottom: 0px;margin-top: 0px;">  Unlock features 🧪</label>
+              </div>
+            </div><br>
+            <!-- <input id="local-input" onkeydown="store(this)"><br> -->
+             <div id="generate-image-dev-div" style="display: none;">
+                <h2>Enter your text:</h2>
+                <div id="inputTextDiv" style="display: flex;flex-direction: row;text-align: center;align-items: center;justify-content: center;">
+                  <input id="inputText" style="text-align: center; display: inline-block; width: 320px;height: 55px; margin-right: 5px;font-family: MinecraftBold;padding: 15px 20px 15px 20px;"
+                    type="text" maxlength="70" checked id="darkmode" value="♥ ALONSOALIAGA ♥" class="darkbuttonboxes" 
+                    placeholder="Type your rank" oninput="generateImage(true)"></input>
+                  <button style="height: 55px;text-align: center;display: inline-block;font-family: MinecraftBold;padding: 2px 15px;border-radius: 10px;" 
+                    id="testfontbutton" class="darkbuttonboxes" onclick="testFont(event)">Test Font</button>
+                </div>
+            </div>
+            <span id="snackbar-error">Loading error..</span>
+            <input id="inputTextCooldown" style="text-align: center; color:gray; display: none; width: 300px; height: 30px; font-family: MinecraftBold; padding: 15px 20px 15px 20px; margin-bottom: 20px;"
+              type="text" maxlength="40" checked id="darkmode" value="AlonsoAliaga" class="darkbuttonboxes"
+              placeholder="Type your username" disabled="true"></input>
+            <br>
+            <!-- <canvas height="60px" width="1" style="display: inline-block;position:absolute;"></canvas> -->
+            <div style="display: none !important;" id="rank-showcase" class="rank-showcase-class">
+              <div style="display: flex;align-items: center;justify-content: center;vertical-align: middle;width: 100%;">
+                <button class="button-small" style="display: inline;margin: 10px;vertical-align: middle" onclick="generateImage(true);">⯇⯇</button>
+                <!-- <canvas width="50px" height="9px" style="display: inline-block;z-index: 100;" id="rank-canvas"></canvas> -->
+                <div id="imageOutputContainerDev" style="margin-top: 0px !important;" class="mt-4 p-4 text-gray-500">
+                    Generated image will appear here.
+                </div>
+                <button class="button-small" style="display: inline;margin: 10px;vertical-align: middle" onclick="generateImage(true);">⯈⯈</button><br>
+              </div>
+            </div>
+            <br>
+          </div>
+        <div>
+        <div class="container darkbuttonboxes">
+            <div class="left-panel dark">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 darktext" style="justify-content: center;display: flex;color: white;font-size: 25px;margin-bottom: 5px;">Characters</h2>
+                <h2 class="darktext" style="justify-content: center;display: flex;color: white;font-size: 16px;margin-bottom: 5px;">Select a character to edit</h2>
+                <div id="characterList" style="font-family: MinecraftRegular;">
+                </div>
+                <div id="specialCharacterList" style="font-family: MinecraftRegular;">
+                </div>
+            </div>
+
+            <div class="right-panel dark">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 darktext">Edit Character Matrix</h2>
+
+                <div class="flex items-center gap-8 mb-4" style="justify-content: center;">
+                    <div class="dim-control-group darktext">
+                        <label class="font-medium text-gray-700 darktext">Width:</label>
+                        <button class="dim-button" id="decreaseWidth">-</button>
+                        <span id="fontWidthValue" class="dim-value darktext">3</span>
+                        <button class="dim-button" id="increaseWidth">+</button>
+                    </div>
+
+                    <div class="dim-control-group darktext">
+                        <label class="font-medium text-gray-700 darktext">Height:</label>
+                        <button class="dim-button" id="decreaseHeight">-</button>
+                        <span id="fontHeightValue" class="dim-value darktext">3</span>
+                        <button class="dim-button" id="increaseHeight">+</button>
+                    </div>
+                </div>
+                <div id="pixelGrid" style="justify-content: center;max-width: 0%;" class="pixel-grid mb-4">
+                  
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-700 mb-2 darktext">Selected Character: <span id="selectedCharDisplay" class="text-blue-600 darktext">None</span></h3>
+
+                <div class="flex justify-between items-center mt-4">
+                    <div class="dim-control-group">
+                        <label class="font-medium text-gray-700 darktext">Force Character Width:</label>
+                        <button class="dim-button" id="decreaseCharWidth">-</button>
+                        <span id="fontCharWidthValue" class="dim-value darktext">3</span>
+                        <button class="dim-button" id="increaseCharWidth">+</button>
+                    </div>
+                    <button id="resetCharWidthButton" class="action-button bg-gray-500 hover:bg-gray-600 dark darkbuttonboxes">Reset Custom Width To Global</button>
+                </div>
+
+
+                <button id="exportButton" class="action-button darkbuttonboxes">Export Font Data</button>
+                <textarea id="exportOutput" class="export-output resize-none darktextboxes" rows="10" readonly placeholder="Exported JSON will appear here..."></textarea>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-2 darktext">Import Font Data</h3>
+                <div id="importErrorDebug" role="alert"></div> <textarea id="importInput" class="import-input resize-none darktextboxes" rows="5" placeholder="Paste font data here..."></textarea>
+                <button id="importButton" class="action-button darkbuttonboxes">Import Data</button>
+
+                <div id="generate-image-normal-div">
+                    <hr class="my-4 border-gray-300">
+
+                    <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-2 darktext">Generate Image from Text</h3>
+                    <input type="text" id="imageTextInput" class="w-full p-2 border rounded darktextboxes" placeholder="Enter text to convert to image...">
+
+                    <div class="flex items-center mt-2 mb-4">
+                        <div class="dim-control-group">
+                            <label class="font-medium text-gray-700 darktext">Pixel Spacing:</label>
+                            <button class="dim-button" id="decreasePixelSpacing">-</button>
+                            <span id="pixelSpacingValue" class="dim-value darktext">1</span>
+                            <button class="dim-button" id="increasePixelSpacing">+</button>
+                        </div>
+                    </div>
+
+                    <button id="generateImageButton" class="action-button">Generate Image</button>
+                    <div id="imageOutputContainer" class="mt-4 p-4 text-gray-500">
+                        Generated image will appear here.
+                    </div>
+                </div>
+                
+                <hr class="my-4 border-gray-300"> <button id="deleteDataButton" class="action-button darkbuttonboxes">Delete All Data & Restart (Double-Click)</button>
+            </div>
+        </div>
+        <br>
+        <div style="justify-content: center;display: flex;font-size: 13px;">
+          <div class="center-container">
+            <fieldset class="group" style="display: flex; justify-content: center;border: 2px solid silver;padding: 0px;width: 300px;align-content: center;"> 
+              <legend style="text-align: center;width: 70%;padding: 0px 15px 5px 15px;font-family: MinecraftBold;" id="thelegend">Looking for a pixelart like this? 💎</legend> 
+              <img src="https://raw.githubusercontent.com/AlonsoAliaga/font-creator/main/assets/showcase/pixelart-showcase.png" style="height: 200px;padding-bottom: 0px;cursor: pointer;" onclick="window.open('https://alonsoaliaga.com/mcpfp', '_blank');">
+            </fieldset>
+          </div>&nbsp;&nbsp;
+          <div class="center-container">
+            <fieldset class="group" style="display: flex; justify-content: center;border: 2px solid silver;padding: 0px;width: 300px;align-content: center;"> 
+              <legend style="text-align: center;width: 70%;padding: 0px 15px 5px 15px;font-family: MinecraftBold;" id="thelegend">Looking for a render like this one? 💎</legend> 
+              <img src="https://raw.githubusercontent.com/AlonsoAliaga/font-creator/main/assets/showcase/render-showcase.png" style="height: 200px;padding-bottom: 0px;cursor: pointer;" onclick="window.open('https://alonsoaliaga.com/mc-renders', '_blank');">
+            </fieldset>
+          </div>&nbsp;&nbsp;
+          <div class="center-container">
+            <fieldset class="group" style="display: flex; justify-content: center;border: 2px solid silver;padding: 0px;width: 300px;align-content: center;"> 
+              <legend style="text-align: center;width: 80%;padding: 0px 15px 5px 15px;font-family: MinecraftBold;" id="thelegend">Looking for an animation like this one? 💎</legend> 
+              <img src="https://raw.githubusercontent.com/AlonsoAliaga/font-creator/main/assets/showcase/skin-showcase.gif" style="height: 200px;padding-bottom: 0px;cursor: pointer;" onclick="window.open('https://alonsoaliaga.com/mc-skin', '_blank');">
+            </fieldset>
+          </div>
+        </div><br>
+        <div class="options">
+            <div style="border-radius: 25px;font-size: 18px ;padding-top: 20px;padding-bottom: 20px; font-family: MinecraftRegular;" class="examples">
+                <h2 style="font-size: 18px; font-family: MinecraftBold;">More tools for you:</h2>
+                <div style="text-align: left;font-size: 20px;" id="tools-for-you">
+                </div>
+                <br>
+                <h2 style="color: transparent;font-size: 18px ;text-align: center; font-family: MinecraftBold;"><a href="https://alonsoaliaga.github.io" rel="noopener" target="_blank">AlonsoAliaga Development</a></h2>
+            </div>
+        </div>
+        <p style="font-size: 12px;">&nbsp;</p>
+        <div>
+            <h2 style="font-size: 15px ;text-align: center;">❤️ Thanks to <a href="https://alonsoaliaga.com/donate" rel="noopener" target="_blank">AlonsoAliaga</a> for his hard work during the development of this tool.</h2>
+            <!-- <div id="mybutton">
+              <button class="buttonface"><a href="https://alonsoaliaga.github.io"><img src="https://raw.githubusercontent.com/AlonsoAliaga/alonsoaliaga.github.io/main/assets/img/apple-touch-icon.png"></a></button>
+            </div> -->
+            <div id="mybutton">
+              <div style="position: center;display: inline-block;">
+                <button class="buttonface"><a href="https://alonsoaliaga.github.io"><img src="https://raw.githubusercontent.com/AlonsoAliaga/alonsoaliaga.github.io/main/assets/img/apple-touch-icon.png"></a></button>
+                <br>
+                <div id="visitor-counter" style="text-align: center;">
+                  <span id="counter-amount" style="font-family: MinecraftBold;font-weight: bold;">Visits: 0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        <div id="hoverPreview">
+            <div id="previewCharName" class="preview-char-name"></div>
+            <div id="previewGrid" style="display: inline-grid !important;" class="preview-grid"></div>
+        </div>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5185973148525065" crossorigin="anonymous"></script>
+        <script src="script.js"></script>
+        <script src="resources.js"></script>
+    </div>
+</body>
+</html>
