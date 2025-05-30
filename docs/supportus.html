@@ -45,12 +45,13 @@
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', initializeEditor);
-      jQuery(document).ready(function($){
-          $('.iframe_wrap iframe').iframeTracker(function(event) {
-              console.log(`Clicked frame!`)
-              console.log(event);
-          });
-      });
+      setTimeout(()=>{
+        console.log(`Loading iframtracker..`)
+        $('.iframe_wrap iframe').iframeTracker(function(event) {
+          console.log(`Clicked frame!`)
+          console.log(event);
+        });
+      },5000);
       function populate(){
         fetch(decodeAndAdd("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0Fsb25zb0FsaWFnYS9BbG9uc29BbGlhZ2FBUEkvcmVmcy9oZWFkcy9tYWluL2FwaS9hZHMvYWRzLmpzb24="))
           .then(res => res.json())
