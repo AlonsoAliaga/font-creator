@@ -46,10 +46,15 @@
   <script>
     document.addEventListener('DOMContentLoaded', initializeEditor);
       setTimeout(()=>{
-        console.log(`Loading iframtracker..`)
-        $('.iframe_wrap iframe').iframeTracker(function(event) {
-          console.log(`Clicked frame!`)
-          console.log(event);
+        console.log(`Loading jQuery(document)..`)
+        jQuery(document).ready(function($){
+          console.log(`Loading iframtracker..`)
+        	$('iframe').iframeTracker({
+        		blurCallback: function(event) {
+        			console.log(`Clicked frame!`)
+              console.log(event.target)
+        		}
+        	});
         });
       },5000);
       function populate(){
