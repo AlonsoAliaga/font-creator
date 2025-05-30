@@ -45,6 +45,12 @@
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', initializeEditor);
+      jQuery(document).ready(function($){
+          $('.iframe_wrap iframe').iframeTracker(function(event) {
+              console.log(`Clicked frame!`)
+              console.log(event);
+          });
+      });
       function populate(){
         fetch(decodeAndAdd("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0Fsb25zb0FsaWFnYS9BbG9uc29BbGlhZ2FBUEkvcmVmcy9oZWFkcy9tYWluL2FwaS9hZHMvYWRzLmpzb24="))
           .then(res => res.json())
@@ -243,5 +249,6 @@
   </script>
   <script src="resources.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery.iframetracker@2.1.0/dist/jquery.iframetracker.min.js"></script>
 </body>
 </html>
