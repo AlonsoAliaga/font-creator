@@ -24,6 +24,8 @@ const DEFAULT_FONT_DATA = {
 let fontData = JSON.parse(JSON.stringify(DEFAULT_FONT_DATA)); // Start with a deep copy of default
 let currentFontKey = 'custom-font'; // Initialize with default font key
 // DOM elements
+const fontNameInputDiv = document.getElementById('font-name-input');
+const fontIdentifierInputDiv = document.getElementById('font-identifier-input');
 const characterListDiv = document.getElementById('characterList');
 const specialCharacterListDiv = document.getElementById('specialCharacterList'); // New div for special characters
 const fontHeightValueSpan = document.getElementById('fontHeightValue');
@@ -404,10 +406,74 @@ function formatExportData(data) {
     } else if (hasLowerCasePixels) {
         caseValue = "lower";
     }
+    let fontName = fontNameInputDiv.value;
+    if(typeof fontName == "undefined" || fontName.length <= 1) {
+        fontNameInputDiv.value = `Custom font ${fontProps.Height}px`;
+    }else{
+        let toCheck = fontNameInputDiv.value.replace(/[^a-z0-9- ]/gi,"");
+        if(toCheck.length < 2) {
+            fontNameInputDiv.value = `Custom font ${fontProps.Height}px`;
+        }
+    }
+    function sanitizeIdentifier(str) {
+        if (typeof str !== 'string') {
+            return '';
+        }
+        let string = str.toLowerCase()
+                  .replace(/\s+/g, '-')
+                  .replace(/[^a-z0-9-]/g, '');
+        while(string.startsWith("-")) {
+            string = string.slice(1);
+        }
+        while(string.endsWith("-")) {
+            string = string.substring(0,string.length - 1);
+        }
+        return string;
+    }
+    //console.log("--- Initial State ---");
+    //console.log("fontIdentifierInputDiv.value (initial):", fontIdentifierInputDiv.value);
+    //console.log("fontNameInputDiv.value (initial):", fontNameInputDiv.value);
+    //console.log("fontProps.Height:", fontProps.Height);
+    //console.log("----------------------");
+    let processedIdentifier = sanitizeIdentifier(fontIdentifierInputDiv.value);
+    //console.log("Processed Identifier (after initial sanitization):", processedIdentifier);
+    if (processedIdentifier.length < 4) {
+        //console.log("Condition: Processed identifier length < 4 (is " + processedIdentifier.length + ")");
+        let processedFontName = sanitizeIdentifier(fontNameInputDiv.value);
+        //console.log("Processed Font Name (after sanitization):", processedFontName);
+        if (processedFontName.length < 3) {
+            //console.log("Condition: Processed fontName length < 3 (is " + processedFontName.length + "). Setting to 'custom-font-XXpx'.");
+            fontIdentifierInputDiv.value = `custom-font-${fontProps.Height}px`;
+        } else {
+            //console.log("Condition: Processed fontName length >= 3. Using processed fontName.");
+            fontIdentifierInputDiv.value = processedFontName;
+        }
+    } else {
+        //console.log("Condition: Processed identifier length >= 4 (is " + processedIdentifier.length + "). Using processed identifier.");
+        fontIdentifierInputDiv.value = processedIdentifier;
+    }
+    /*
+    if(typeof fontIdentifierInputDiv.value != "undefined") {
+        console.log(fontIdentifierInputDiv.value)
+        fontIdentifierInputDiv.value = fontIdentifierInputDiv.value.toLowerCase().replace(/\s+/g,"-").replace(/^[a-z0-9-]/gi,"");
+        console.log(fontIdentifierInputDiv.value)
+    }
+    if(fontIdentifierInputDiv.value.length < 3) {
+        console.log("2")
+        let toCheck = fontNameInputDiv.value.replace(/^a-z0-9-/gi,"");
+        if(toCheck.length < 2) {
+            fontIdentifierInputDiv.value = `custom-font-${fontProps.Height}px`;
+        }else{
+            fontIdentifierInputDiv.value = fontNameInputDiv.value.toLowerCase().replace(/^a-z0-9-/gi,"");
+        }
+    }else{
+        console.log("1")
+    }
+    */
     let pixelSpacing = isNull(fontProps.PixelSpacing) ? 1 : fontProps.PixelSpacing;
-    output += `  "${fontKey}": {\n`; // Start font key object
+    output += `  "${fontIdentifierInputDiv.value}": {\n`; // Start font key object
     output += `    "Disabled": ${fontProps.Disabled},\n`;
-    output += `    "Name": "${fontProps.Name}",\n`;
+    output += `    "Name": "${fontNameInputDiv.value}",\n`;
     output += `    "Height": ${fontProps.Height},\n`;
     output += `    "Width": ${fontProps.Width},\n`;
     output += `    "PixelSpacing": ${pixelSpacing},\n`;
@@ -580,6 +646,8 @@ function importData() { // Named function for import
                 PixelSpacing: importedFontData[currentFontKey].PixelSpacing || 1, // Load PixelSpacing
             }
         };
+        fontNameInputDiv.value = importedFontData[currentFontKey].Name;
+        fontIdentifierInputDiv.value = fontKey;
         let charWidths = importedFontData[currentFontKey].CharacterWidths;
         if(typeof importedFontData[currentFontKey].Width == 'undefined') {
             let toGetMostWidth = {};

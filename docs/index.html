@@ -71,7 +71,6 @@
             <input id="inputTextCooldown" style="text-align: center; color:gray; display: none; width: 300px; height: 30px; font-family: MinecraftBold; padding: 15px 20px 15px 20px; margin-bottom: 20px;"
               type="text" maxlength="40" checked id="darkmode" value="AlonsoAliaga" class="darkbuttonboxes"
               placeholder="Type your username" disabled="true"></input>
-            <br>
             <!-- <canvas height="60px" width="1" style="display: inline-block;position:absolute;"></canvas> -->
             <div style="display: none !important;" id="rank-showcase" class="rank-showcase-class">
               <div style="display: flex;align-items: center;justify-content: center;vertical-align: middle;width: 100%;">
@@ -82,8 +81,8 @@
                 </div>
                 <button class="button-small" style="display: inline;margin: 10px;vertical-align: middle" onclick="generateImage(true);">⯈⯈</button><br>
               </div>
+              <br>
             </div>
-            <br>
           </div>
         <div>
         <div class="container darkbuttonboxes">
@@ -97,8 +96,13 @@
             </div>
 
             <div class="right-panel dark">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4 darktext">Edit Character Matrix</h2>
-
+                <h2 style="margin-bottom: 0px;" class="text-xl font-semibold text-gray-800 mb-4 darktext">Edit Character Matrix</h2>
+                <div class="items-center" style="justify-content: center;">
+                    <div class="dim-control-group darktext" style="display: flex;vertical-align: middle;align-items: center;align-content: center;text-align: center;align-self: center;">
+                        Font name: <textarea style="display: inline;align-content: center;text-align-last: center;align-items: center;border-radius: 10px;" class="darktextboxes" id="font-name-input" placeholder="Enter font name" value="Custom font">Custom font</textarea>
+                        Font identifier: <textarea style="display: inline;align-content: center;text-align-last: center;align-items: center;border-radius: 10px;" class="darktextboxes" id="font-identifier-input" placeholder="enter-font-identifier" value="custom-font">custom-font</textarea>
+                    </div>
+                </div>
                 <div class="flex items-center gap-8 mb-4" style="justify-content: center;">
                     <div class="dim-control-group darktext">
                         <label class="font-medium text-gray-700 darktext">Width:</label>

@@ -46,13 +46,10 @@
   <script>
     document.addEventListener('DOMContentLoaded', initializeEditor);
       setTimeout(()=>{
-        console.log(`Loading jQuery(document)..`)
         jQuery(document).ready(function($){
-          console.log(`Loading iframtracker..`)
         	$('iframe').iframeTracker({
         		blurCallback: function(event) {
-        			console.log(`Clicked frame!`)
-              console.log(event.target)
+              console.log(`Thanks for clicking this ad!`)
         		}
         	});
         });
