@@ -6,62 +6,33 @@
   <link rel="shortcut icon" href="https://cdn.discordapp.com/emojis/791742603183259648.webp?size=96&quality=lossless" type="image/x-icon">
   <title>Support us by watching some ads!</title>
   <style>
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+    .space {
+      background-color:#ffffff00;
+      height: 5px;
+      width: 500px;
+      margin: 5px;
     }
-    .adsbygoogle-slot {
-      display: block;
-      width: 100%;
-      height: 1px;  /* prácticamente invisible */
-      margin: 20px 0;
+    .content-block {
+      box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.4);
+      padding: 5px;
+      border-width: 4px;
+      /* border-style: double; */
+      border-radius: 15px;
+      width: 750px;
+    }
+    img {
+      /* box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.4); */
+      border-radius: 5px;
+    }
+    p {
+      margin: 3px !important;
     }
   </style>
 </head>
 <body>
   <div style="width: 100%;" id="content">
     <button style="height: 80px;width: 100%;font-size: 20px;border-radius: 0px;background-color: #ff8d00;font-weight: bold;" class="darkbuttonboxes" id="support-button">Loading..</button>
-    <div class="adsbygoogle-slot"></div>
-    <p>▁▁▁▁▁▁▁▁▁▁</p>
-    <div class="adsbygoogle-slot"></div>
-    <p>▁▁▁▁▁▁▁▁▁▁</p>
-    <div class="adsbygoogle-slot"></div>
-    <p>▁▁▁▁▁▁▁▁▁▁</p>
-    <div class="adsbygoogle-slot"></div>
-    <p>▁▁▁▁▁▁▁▁▁▁</p>
-    <div class="adsbygoogle-slot"></div>
-    <p>▁▁▁▁▁▁▁▁▁▁</p>
-    <div class="adsbygoogle-slot"></div>
-    <p>▁▁▁▁▁▁▁▁▁▁</p>
-    <div class="adsbygoogle-slot"></div>
-    <p>▁▁▁▁▁▁▁▁▁▁</p>
-    <div class="adsbygoogle-slot"></div>
-    <p>▁▁▁▁▁▁▁▁▁▁</p>
-    <div class="adsbygoogle-slot"></div>
-  </div>
-  <script>
-    window.addEventListener('load', function() {
-      // Selecciona todos los marcadores de anuncios
-      document.querySelectorAll('.adsbygoogle-slot').forEach(function(slot) {
-        // Convierte cada <div> en un contenedor de AdSense
-        slot.classList.add('adsbygoogle');
-        slot.setAttribute('data-ad-format', 'auto');
-        slot.setAttribute('data-ad-client', 'ca-pub-5185973148525065');
-        slot.setAttribute('data-ad-slot', '');  // deja vacío para Auto Ads
-
-        // Inserta el anuncio
-        try {
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        } catch(e) {
-          console.warn('Error al push adsbygoogle:', e);
-        }
-      });
-    });
-  </script>
+  </div><br>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5185973148525065"
     crossorigin="anonymous"></script>
   <script>
@@ -74,7 +45,55 @@
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', initializeEditor);
-    function initializeEditor() {
+      function populate(){
+        fetch(atob("aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9BbG9uc29BbGlhZ2EvQWxvbnNvQWxpYWdhQVBJL2NvbnRlbnRzL2FwaS9hZHMvYWRzLmpzb24/cmVmPW1haW4="))
+          .then(res => res.json())
+          .then(content => {
+            const decoded = atob(content.content);
+            const parsed = JSON.parse(decoded);
+            let adsData = parsed;
+            for(let adData of adsData) {
+              console.log(adData);
+              let imageLink = adData.Image;
+              let title = adData.Title;
+              let link = adData.Link;
+              let lines = adData.Lines;
+              let priority = adData.Priority;
+              let div = document.createElement("div");
+              div.classList.add("content-block");
+              let img = document.createElement("img");
+              img.src = imageLink; 
+              img.style.maxWidth = "100%";
+              img.style.cursor = "pointer";
+              img.onclick = function(event) {
+                  window.open(link,"_blank");
+              };
+              div.appendChild(img);
+              let h2 = document.createElement("h2");
+              h2.innerHTML = title;
+              div.appendChild(h2);
+              for (let line of lines) {
+                  let p = document.createElement("p");
+                  p.innerHTML = line;
+                  div.appendChild(p);
+              }
+              document.body.appendChild(div);
+              let space = document.createElement("div");
+              space.classList.add("space");
+              document.body.appendChild(space);
+            }
+            setTimeout(()=>{
+              let div = document.createElement("div");
+              let h2 = document.createElement("h2");
+              h2.style.cssText = "font-size: 15px ;text-align: center;";
+              h2.innerHTML = `<br>❤️ Thanks you for visiting this site. Check our tools in <a href="https://alonsoaliaga.com/site" rel="noopener" target="_blank">our official site</a>!<br><br>`
+              div.appendChild(h2);
+              document.body.appendChild(div);
+            },1000);
+          });
+      }
+      function initializeEditor() {
+      populate();
         const button = document.getElementById("support-button");
         if(!button) return;
         if(adBlockEnabled) {
@@ -84,7 +103,7 @@
             button.innerHTML = `⛔ How did you get here? Click here to return to our generator! ⛔`;
             button.style.cursor = "pointer"
             button.onclick = function(event) {
-                window.location = `https://alonsoaliaga.com/mc-textures`
+                window.location = `https://alonsoaliaga.com/font-creator`
             }
             return;
         }
@@ -94,7 +113,7 @@
                 button.innerText = `🗝️ Click an ad below to unlock new features!`;
                 button.onclick = function(event) {
                     button.onclick = function () {
-
+                      return false;
                     }
                     button.innerText = `🔓 You have unlocked nothing!`;
                     party();
@@ -124,7 +143,7 @@
                         current = current + parseInt(additional);
                         finalMsgs[current] = message;
                     }
-                    console.log(finalMsgs)
+                    //console.log(finalMsgs)
                     let seconds = 0;
                     let b = setInterval(()=> {
                         if(finalMsgs[seconds]) {
