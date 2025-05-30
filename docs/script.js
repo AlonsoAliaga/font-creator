@@ -520,7 +520,7 @@ function getMostRepeatedChars(charCounts) {
 }
 function loadCounter() {
     let href = window.location.href;
-    if(!href.includes(atob("YWxvbnNvYWxpYWdhLmdpdGh1Yi5pbw=="))) return;
+    //if(!href.includes(atob("YWxvbnNvYWxpYWdhLmdpdGh1Yi5pbw=="))) return;
     let link = atob("aHR0cHM6Ly9hbG9uc29hcGkuZGlzY2xvdWQuYXBwL2NvdW50ZXI/c2l0ZT08c2l0ZT4ma2V5PTxrZXk+")
      .replace(/<site>/g,"font-creator").replace(/<key>/g,"KEY-A");
     let counter = document.getElementById("visitor-counter");
@@ -1092,6 +1092,7 @@ function checkSite(window) {
     enableDevMode();
   }
   setTimeout(()=>{
+    return
     let href = window.location.href;
     if(!href.includes(atob("YWxvbnNvYWxpYWdhLmdpdGh1Yi5pbw=="))) {
       try{document.title = `Page stolen from https://${atob("YWxvbnNvYWxpYWdhLmdpdGh1Yi5pbw==")}`;}catch(e){}

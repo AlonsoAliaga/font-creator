@@ -8,8 +8,8 @@
   <style>
     .space {
       background-color:#ffffff00;
-      height: 5px;
-      width: 500px;
+      height: 10px;
+      width: 450px;
       margin: 5px;
     }
     .content-block {
@@ -46,14 +46,15 @@
   <script>
     document.addEventListener('DOMContentLoaded', initializeEditor);
       function populate(){
-        fetch(atob("aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9BbG9uc29BbGlhZ2EvQWxvbnNvQWxpYWdhQVBJL2NvbnRlbnRzL2FwaS9hZHMvYWRzLmpzb24/cmVmPW1haW4="))
+        fetch(atob("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0Fsb25zb0FsaWFnYS9BbG9uc29BbGlhZ2FBUEkvcmVmcy9oZWFkcy9tYWluL2FwaS9hZHMvYWRzLmpzb24="))
           .then(res => res.json())
           .then(content => {
-            const decoded = atob(content.content);
-            const parsed = JSON.parse(decoded);
-            let adsData = parsed;
+            //const decoded = atob(content.content);
+            //const parsed = JSON.parse(decoded);
+            let adsData = content;
+            //adsData = [...content,...content]
             for(let adData of adsData) {
-              console.log(adData);
+              //console.log(adData);
               let imageLink = adData.Image;
               let title = adData.Title;
               let link = adData.Link;
