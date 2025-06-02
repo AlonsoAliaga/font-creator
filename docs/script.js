@@ -3,8 +3,8 @@
 const ALL_CHARS = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz+-_(){}[]=/\\%.*:,;!¡?¿\"<>'°|♥#^ @";
 // Define the maximum possible dimensions for the font matrices
 // This is used to preserve pixels when dimensions are temporarily reduced.
-const MAX_FONT_HEIGHT = 30;
-const MAX_FONT_WIDTH = 30;
+const MAX_FONT_HEIGHT = 120;
+const MAX_FONT_WIDTH = 70;
 
 let devMode = false;
 // Key for localStorage
@@ -21,6 +21,13 @@ const DEFAULT_FONT_DATA = {
         // Character matrices will be stored here, always at MAX_FONT_HEIGHT x MAX_FONT_WIDTH
     }
 };
+let uniqueId2;
+let uniqueId;
+try{
+    uniqueId = crypto.randomUUID();
+}catch(e){
+    uniqueId = `${Math.random() * 1000000}`
+}
 let fontData = JSON.parse(JSON.stringify(DEFAULT_FONT_DATA)); // Start with a deep copy of default
 let currentFontKey = 'custom-font'; // Initialize with default font key
 // DOM elements
@@ -125,6 +132,31 @@ function getEffectiveCharWidthForRender(char) {
     // Otherwise, use the global width for display/export (trimming happens only on export)
     return fontData[currentFontKey].Width;
 }
+function shiftMatrix(horizontal,vertical) {
+    let charMatrix = fontData[currentFontKey][currentSelectedChar];
+    if(!charMatrix) return;
+    if(charMatrix.length == 0 || charMatrix[0].length == 0) return;
+    let width = charMatrix[0].length;
+    if(horizontal == "left") {
+        charMatrix.forEach(a=>a.shift())
+        charMatrix.forEach(a=>a.push(null));
+    }
+    if(horizontal == "right") {
+        charMatrix.forEach(a=>a.pop())
+        charMatrix.forEach(a=>a.unshift(null));
+    }
+    if(vertical == "up") {
+        charMatrix.shift()
+        charMatrix.push(Array(width).fill(null));
+    }
+    if(vertical == "down") {
+        charMatrix.pop();
+        charMatrix.unshift(Array(width).fill(null));
+    }
+    //console.log(`Width: ${width}`)
+    //console.log(charMatrix.map(a=>a.join(",")).join("\n"))
+    renderPixelGrid()
+}
 // Function to render the pixel grid for the selected character
 function renderPixelGrid() {
     pixelGridDiv.innerHTML = ''; // Clear existing grid
@@ -139,6 +171,7 @@ function renderPixelGrid() {
     pixelGridDiv.style.gridTemplateColumns = `repeat(${currentDisplayWidth}, ${pixelCellSize}px)`;
     let charMatrix = fontData[currentFontKey][currentSelectedChar];
     // Ensure the matrix for the current character exists and is max-sized
+    
     if (!charMatrix || charMatrix.length !== MAX_FONT_HEIGHT || (charMatrix.length > 0 && charMatrix[0].length !== MAX_FONT_WIDTH)) {
         const oldMatrix = charMatrix;
         charMatrix = createMaxSizedEmptyMatrix();
@@ -364,7 +397,7 @@ function resetCharacterWidth() {
 }
 // --- Export/Import Logic ---
 // Custom formatter for export to achieve horizontal arrays and `0` for null
-function formatExportData(data) {
+function formatExportData(data,keepColumns = false) {
     let output = "{\n";
     const fontKey = Object.keys(data)[0]; // Assuming 'font3x3'
     const fontProps = data[fontKey];
@@ -492,7 +525,11 @@ function formatExportData(data) {
                 exportMatrixWidth = fontProps.CharacterWidths[char];
             } else {
                 // Otherwise, calculate trimmed width based on content or global width if empty
-                exportMatrixWidth = getContentBasedWidth(char);
+                if(keepColumns) {
+                    exportMatrixWidth = fontData[currentFontKey].Width;
+                }else{
+                    exportMatrixWidth = getContentBasedWidth(char);
+                }
             }
             // Slice each row to the calculated exportMatrixWidth
             let exportedMatrix = matrix.slice(0, fontProps.Height).map(row => {
@@ -616,11 +653,16 @@ function loadCounter() {
     }
 }
 // Function to import data
-function importData() { // Named function for import
+function importData(dataToImport) { // Named function for import
     clearTimeout(importErrorTimeout); // Clear any existing timeout
     importErrorDebug.style.display = 'none'; // Hide previous error
     try {
-        const importedString = importInput.value;
+        let loadingFromStorage = false;
+        let importedString = importInput.value;
+        if(typeof dataToImport != "undefined" && typeof dataToImport == "string") {
+            importedString = dataToImport;
+            loadingFromStorage = true;
+        }
         const parsedData = JSON.parse(importedString);
         const fontKey = Object.keys(parsedData)[0];
         if(devMode) {
@@ -757,7 +799,17 @@ function importData() { // Named function for import
         }
         if(devMode) generateImage(devMode);
         //console.log("6");
-        alert('Font data imported successfully!');
+        if(!loadingFromStorage) {
+            //alert('Font data imported successfully!');
+            alertMessage(`✅ Font data imported successfully!`)
+        }else{
+            alertMessage(`✅ Succesfully loaded last workspace!`)
+            //mportErrorDebug.textContent = `Succesfully loaded last modification.`;
+            //mportErrorDebug.style.display = 'block';
+            //mportErrorTimeout = setTimeout(() => {
+            //   importErrorDebug.style.display = 'none';
+            //, 5000); // Hide after 10 seconds
+        }
         exportOutput.value = ''; // Clear export output after import
         saveFontDataToLocalStorage(); // Save after successful import
     } catch (error) {
@@ -769,10 +821,29 @@ function importData() { // Named function for import
         }, 10000); // Hide after 10 seconds
     }
 }
+let alertTimeout;
+function alertMessage(text = `Nothing here..`) {
+  if(alertTimeout) {
+    clearTimeout(alertTimeout);
+    var sb = document.getElementById("snackbar");
+    sb.className = sb.className.replace("show", "");
+  }
+  var sb = document.getElementById("snackbar");
+
+  //this is where the class name will be added & removed to activate the css
+  sb.className = "show";
+  sb.innerText = `${text}`
+
+  alertTimeout = setTimeout(()=>{ sb.className = sb.className.replace("show", ""); }, 3000);
+}
 // --- Local Storage Functions ---
 function saveFontDataToLocalStorage() {
     try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fontData));
+        const exportedData = formatExportData(fontData,true);
+        localStorage.setItem(LOCAL_STORAGE_KEY, exportedData);
+        
+        //localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fontData));
+        
         //console.log("Font data saved to localStorage."); // For internal debugging
     } catch (e) {
         console.error("Error saving to localStorage:", e);
@@ -783,6 +854,8 @@ function loadFontDataFromLocalStorage() {
     try {
         const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (savedData) {
+            importData(savedData);
+            return;
             const parsedData = JSON.parse(savedData);
             const fontKey = Object.keys(parsedData)[0];
             if (fontKey && parsedData[fontKey] && typeof parsedData[fontKey].Height !== 'undefined' && typeof parsedData[fontKey].Width !== 'undefined') {
@@ -845,14 +918,26 @@ function loadFontDataFromLocalStorage() {
         fontData = JSON.parse(JSON.stringify(DEFAULT_FONT_DATA));
         alert("Could not load saved data. Starting with a fresh editor.");
     }
+}// --- Reset Editor Function ---
+function deleteMatrix() {
+    if (confirm('Are you sure you want to delete this character matrix?\n\n⚠️ This action cannot be undone. ⚠️')) {
+        if(typeof fontData[currentFontKey] == "undefined" || typeof fontData[currentFontKey][currentSelectedChar] == "undefined") {
+            alert('You shouldn\'t read this message.\n\nHow you got this error?');
+            return;
+        }
+        fontData[currentFontKey][currentSelectedChar] = createMaxSizedEmptyMatrix();
+        saveFontDataToLocalStorage();
+        renderPixelGrid()
+        alert('Current character matrix was deleted!');
+    }
 }
 // --- Reset Editor Function ---
 function resetEditor() {
-    if (confirm('Are you sure you want to delete all saved font data and restart? This action cannot be undone.')) {
+    if (confirm('Are you sure you want to delete all saved font data and restart? This action cannot be undone.\nReminder: Import text will not be deleted.\n\n⚠️ This action cannot be undone. ⚠️')) {
         fontData = JSON.parse(JSON.stringify(DEFAULT_FONT_DATA)); // Reset to default state
         localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear localStorage
         currentFontKey = 'custom-font'; // Reset font key to default
-        initializeEditor(); // Re-initialize the editor UI
+        initializeEditor(true); // Re-initialize the editor UI
         alert('All font data has been deleted and the editor has been reset.');
     }
 }
@@ -1108,12 +1193,24 @@ importButton.addEventListener('click', importData);
 generateImageButton.addEventListener('click', generateImage);
 deleteDataButton.addEventListener('dblclick', resetEditor);
 // --- Initialization ---
-function initializeEditor() {
+function initializeEditor(isReset = false) {
     loadFontDataFromLocalStorage(); // Attempt to load saved data first
     // Ensure all characters have a max-sized matrix, even if not loaded from storage
     ALL_CHARS.split('').forEach(char => {
         if(isNull(fontData[currentFontKey][char])) {
-            fontData[currentFontKey][char] = createMaxSizedEmptyMatrix();
+            console.log(`Checking ${char}`)
+            if(char == "@") {
+                const m = [];
+                for (let r = 0; r < MAX_FONT_HEIGHT; r++) {
+                    m.push([]);
+                }
+                fontData[currentFontKey][char] = m;
+                if(typeof fontData[currentFontKey].CharacterWidths == "undefined")
+                    fontData[currentFontKey].CharacterWidths = {};
+                fontData[currentFontKey].CharacterWidths["@"] = 0
+            }else{
+                fontData[currentFontKey][char] = createMaxSizedEmptyMatrix();
+            }
         }
         // CharacterWidths are now populated by importData/loadFontDataFromLocalStorage
         // or when pixels are drawn/erased. No explicit initialization needed here.
@@ -1131,14 +1228,224 @@ function initializeEditor() {
     fontWidthValueSpan.textContent = fontData[currentFontKey].Width;
     pixelSpacingValueSpan.textContent = fontData[currentFontKey].PixelSpacing; // Initialize pixel spacing UI
     
-    checkSite(window);
-    toggleDarkmode();
+    if((typeof isReset == "boolean" && !isReset) || typeof isReset != "event") {
+        checkSite(window);
+        toggleDarkmode();
+        loadCounter();
+        checkUnlockStatus();
+    }
     generateImage(devMode);
-    loadCounter();
+}
+function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }
 // Call initializeEditor when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initializeEditor);
+document.addEventListener('DOMContentLoaded', toggleDarkmode);
+let unknown;
+window.addEventListener('message', function(event){
+    if(event.data.load == 96) {
+        if(uniqueId == event.data.uuid) {
+            uniqueId2 = event.data.uuid2;
+        }//else console.log("[load] Different uuid1")
+    }else if(event.data.key == 96) {
+        if(uniqueId == event.data.uuid) {
+            if(uniqueId2 == event.data.uuid2) {
+                unknown = uniqueId;
+                window.addEventListener('focus', function(event){
+                    if(unknown == undefined) return
+                    if (history.scrollRestoration) {
+                      history.scrollRestoration = 'manual';
+                    } else {
+                      window.onbeforeunload = function () {
+                          window.scrollTo(0, 0);
+                      }
+                    }
+                    setTimeout(()=>checkUnlockStatus(),2500);
+                },{once:true})
+            }//else console.log("[key] Different uuid2")
+        }//else console.log("[key] Different uuid1")
+    }//else console.log("No load=96 or key=96")
+});
+async function checkUnlockStatus() {
+        const unlockStatusElement = document.getElementById('unlock-features-div');
+        // setInterval(()=>{
+        //   unlockStatusElement.click();
+        // },10);
+        //const openAdsButton = document.getElementById('openAdsButton');
+        try {
+            const storedUnlockData = localStorage.getItem(`appUnlockDataFeature-${btoa("moveArrows")}`);
+            if (!storedUnlockData) {
+                return;
+            }
+            //let { unlockedUntil, signature } = JSON.parse(storedUnlockData);
+            let json = {};
+            try{
+              json = JSON.parse(storedUnlockData);
+            }catch(e) {
+            }
+            let { unlockedUntil, signature } = json;
 
+            // Ensure data types are correct
+            if (typeof unlockedUntil !== 'number' || typeof signature !== 'string') {
+                localStorage.removeItem(`appUnlockDataFeature-${btoa("moveArrows")}`); // Clear invalid data/
+                return;
+            }
+            // Recalculate the expected signature to check for tampering
+            const expectedSignature = await generateSha256Hash(unlockedUntil + "WhatTheHellAreYouLookingForHere?");
+
+            // Check if the signature matches AND if the timestamp is still valid
+            const currentTime = Date.now();
+
+            if (signature === expectedSignature && currentTime < unlockedUntil) {
+                const remainingTimeMs = unlockedUntil - currentTime;
+                const remainingHours = Math.floor(remainingTimeMs / (1000 * 60 * 60));
+                const remainingMinutes = Math.floor((remainingTimeMs % (1000 * 60 * 60)) / (1000 * 60));
+                unlockStatusElement.innerText = `UNLOCKED FEATURES! 🚀\r\nExpires in ${remainingHours}h ${remainingMinutes}m`;
+                unlockStatusElement.style.backgroundColor = "rgb(128 255 103)"
+                unlockStatusElement.style.fontWeight = "bold"
+                unlockStatusElement.disabled = true;
+                document.getElementById("matrix-move-div").style.display = null;
+                // document.getElementById("button-internal-colored-corner-border-div").style.display = "inline-block";
+                // document.getElementById("button-internal-gradient-border-div").style.display = "inline-block";
+                unlockStatusElement.onclick = function(){
+                    return false;
+                };
+                //console.warn("Already unlocked!");
+                let time = 0;
+                let a = setInterval(()=>{
+                    if(time < 5) clap();
+                    if(time > 10) {
+                        clearInterval(a);
+                        return;
+                    }
+                    customParty("👑 🔓 🗝️ 🧪".split(" "));
+                    time++;
+                },250);
+                //confettiTime()
+            } else {
+                // Either signature mismatch (tampered) or unlock period expired
+                if (signature !== expectedSignature) {
+                    console.warn("Unlock data tampered with! Signature mismatch.");
+                    // For a real application, you might want to log this to a server
+                    // to detect and analyze tampering attempts.
+                }
+                localStorage.removeItem(`appUnlockDataFeature-${btoa("moveArrows")}`); // Clear invalid or expired data
+                unlockStatusElement.textContent = '  Unlock features 🧪';
+                //console.warn("Suspicious data, not unlocked.");
+            }
+        } catch (error) {
+            //console.error("Error checking unlock status:", error);
+            localStorage.removeItem(`appUnlockDataFeature-${btoa("moveArrows")}`); // Clear potentially corrupted data
+            unlockStatusElement.textContent = '  Unlock features 🧪';
+        }
+        function customParty(emojis = [], time = 0) {
+          const defaults = {
+            spread: 360,
+            ticks: 100,
+            gravity: 0,
+            decay: 0.94,
+            startVelocity: 30,
+          };
+          function shoot(particleCount = 10) {
+            confetti({
+              ...defaults,
+              particleCount: particleCount,
+              scalar: 2,
+              shapes: ["emoji"],
+              shapeOptions: {
+                emoji: {
+                  value: emojis,
+                },
+              },
+            });
+          }
+          if(time != 0) {
+            const duration = time * 1 * 1000,
+              animationEnd = Date.now() + duration;
+            const interval = setInterval(function () {
+            	const timeLeft = animationEnd - Date.now();
+            	if (timeLeft <= 0) {
+            		return clearInterval(interval);
+            	}
+            	const particleCount = 25 * (timeLeft / duration);
+              shoot(particleCount);
+            },250);
+          }
+          shoot();
+        }
+        function party(){
+          const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();
+          o.type='square';
+          o.frequency.setValueAtTime(500,a.currentTime);
+          g.gain.setValueAtTime(1,a.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.3);
+          o.connect(g).connect(a.destination);
+          o.start();o.stop(a.currentTime+0.3);
+        }
+        function clap(){
+          const a=new AudioContext(),b=a.createBuffer(1,a.sampleRate*0.3,a.sampleRate),
+                d=b.getChannelData(0);
+          for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+          const s=a.createBufferSource();s.buffer=b;
+          const f=a.createBiquadFilter();f.type='bandpass';f.frequency.value=1000;
+          const g=a.createGain();g.gain.setValueAtTime(1,a.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+0.3);
+          s.connect(f).connect(g).connect(a.destination);s.start();
+        }
+        function confettiTime(type = 0) {
+          if(type == 0) party();
+          else clap();
+          let soundTimes = 0;
+          const duration = 3 * 1 * 1000,
+            animationEnd = Date.now() + duration,
+            defaults = { startVelocity: 30, spread: 360, ticks: 20, zIndex: 0 };
+
+          function randomInRange(min, max) {
+          	return Math.random() * (max - min) + min;
+          }
+          const interval = setInterval(function () {
+          	const timeLeft = animationEnd - Date.now();
+          
+          	if (timeLeft <= 0) {
+          		return clearInterval(interval);
+          	}
+            if(type == 0) {
+              soundTimes++;
+              if(soundTimes < 10) clap();
+            }
+          
+          	const particleCount = 25 * (timeLeft / duration);
+          
+          	// since particles fall down, start a bit higher than random
+          	confetti(
+          		Object.assign({}, defaults, {
+          			particleCount,
+          			origin: { x: randomInRange(0.1, 0.5), y: Math.random() - 0.2 }
+          		})
+          	);
+          	confetti(
+          		Object.assign({}, defaults, {
+          			particleCount,
+          			origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+          		})
+          	);
+          }, 250);
+        }
+    }
+async function generateSha256Hash(message) {
+    const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
+    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+    return hashHex;
+}
 function checkSite(window) {
   let search = window.location.search;
   if(typeof search !== "undefined" && search.length > 0) {

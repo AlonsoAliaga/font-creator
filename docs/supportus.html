@@ -44,6 +44,8 @@
     });
   </script>
   <script>
+    let siteUniqueId;
+    let siteUniqueId2;
     document.addEventListener('DOMContentLoaded', initializeEditor);
       setTimeout(()=>{
         jQuery(document).ready(function($){
@@ -97,7 +99,7 @@
               let div = document.createElement("div");
               let h2 = document.createElement("h2");
               h2.style.cssText = "font-size: 15px ;text-align: center;";
-              h2.innerHTML = `<br>❤️ Thanks you for visiting this site. Check our tools in <a href="https://alonsoaliaga.com/site" rel="noopener" target="_blank">our official site</a>!<br><br>`
+              h2.innerHTML = `<br>❤️ Thank you for visiting this site. Check our tools in <a href="https://alonsoaliaga.com/site" rel="noopener" target="_blank">our official site</a>!<br><br>`
               div.appendChild(h2);
               document.body.appendChild(div);
             },1000);
@@ -115,6 +117,18 @@
           }
           return result;
       }
+      window.addEventListener('message', async function(event) {
+          let data = event.data;
+          //console.log(typeof data);
+          if(typeof data != "object") return;
+          siteUniqueId = data.uuid;
+          try{
+              siteUniqueId2 = crypto.randomUUID();
+          }catch(e){
+              siteUniqueId2 = `${Math.random() * 1000000}`
+          }
+          window.opener.postMessage({load:96,uuid:siteUniqueId,uuid2:siteUniqueId2},"*");
+      });
       function initializeEditor() {
         populate();
         const button = document.getElementById("support-button");
@@ -130,6 +144,7 @@
             }
             return;
         }
+        let unlocked = false;
         let time = 20;
         let inter = setInterval(()=>{
             if(time < 0) {
@@ -169,7 +184,7 @@
                     }
                     //console.log(finalMsgs)
                     let seconds = 0;
-                    let b = setInterval(()=> {
+                    let b = setInterval(async ()=> {
                         if(finalMsgs[seconds]) {
                             let msg = finalMsgs[seconds];
                             if(msg == `⛔ Well, good bye.`) {
@@ -179,7 +194,9 @@
                             if(msg == "close") {
                                 clap();
                                 clearInterval(b)
-                                window.close();
+                                await unlockNow();
+                                window.opener.postMessage({key:96,uuid:siteUniqueId,uuid2:siteUniqueId2},"*");
+                                setTimeout(()=>window.close(),1000);
                             }else{
                                 button.innerText = finalMsgs[seconds];
                                 party();
@@ -194,6 +211,35 @@
             button.innerText = `⌛ Please wait ${time} seconds..`;
             time--;
         },1000);
+        async function unlockNow() {
+          if(time > 0 || unlocked) return;
+          unlocked = true;
+          try {
+            // Calculate the expiration timestamp (current time + 12 hours)
+            const unlockDurationHours = 12;
+            const unlockedUntil = Date.now() + (unlockDurationHours * 60 * 60 * 1000);
+
+            // Generate the signature for tamper detection
+            const signature = await generateSha256Hash(unlockedUntil + "WhatTheHellAreYouLookingForHere?");
+
+            // Store the timestamp and its signature in localStorage
+            const unlockData = {
+                unlockedUntil: unlockedUntil,
+                signature: signature
+            };
+            localStorage.setItem(`appUnlockDataFeature-${btoa("moveArrows")}`,JSON.stringify(unlockData))
+            //console.log('Unlock data stored in localStorage:', unlockData);
+          }catch (error) {
+             console.error("Error during unlock process:", error);
+          }
+        }
+    }
+    async function generateSha256Hash(message) {
+        const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
+        const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+        return hashHex;
     }
     function party(){
       const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();

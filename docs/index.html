@@ -51,7 +51,10 @@
                 <input type="checkbox" checked id="darkmode" onclick="toggleDarkmode();"></input>
                 <label for="darkmode" style="margin-bottom: 0px;margin-top: 0px;"> Dark Mode 👁‍🗨</label>
               </div>&nbsp;<div id="unlock-features-div" style="display: inline-block;font-family: MinecraftBold;padding: 6px 12px;border-radius: 13px;outline: none;cursor: pointer" 
-                onclick="window.open('./supportus.html', '_blank');" class="darkbuttonboxes">
+                onclick="(()=>{
+                  let supportus = window.open('./supportus.html', '_blank');
+                  if(supportus) setTimeout(()=>supportus.postMessage({uuid:uniqueId},'*'),3000);
+                })();" class="darkbuttonboxes">
                 <input style="display: none;" type="checkbox" checked id="unlock-features"></input>
                 <label for="unlock-features" style="margin-bottom: 0px;margin-top: 0px;">  Unlock features 🧪</label>
               </div>
@@ -96,7 +99,10 @@
             </div>
 
             <div class="right-panel dark">
+              <button style="position: absolute;width: 42px;height: 37px;padding-left: 2px;font-size: 25px;border-radius: 10px;background-color: #ff4646;" onclick="deleteMatrix();" class="darkbuttonboxes">🗑️</button>
+              <div class="" style="display: flex;justify-content: center;">
                 <h2 style="margin-bottom: 0px;" class="text-xl font-semibold text-gray-800 mb-4 darktext">Edit Character Matrix</h2>
+              </div>
                 <div class="items-center" style="justify-content: center;">
                     <div class="dim-control-group darktext" style="display: flex;vertical-align: middle;align-items: center;align-content: center;text-align: center;align-self: center;">
                         Font name: <textarea style="display: inline;align-content: center;text-align-last: center;align-items: center;border-radius: 10px;" class="darktextboxes" id="font-name-input" placeholder="Enter font name" value="Custom font">Custom font</textarea>
@@ -118,8 +124,23 @@
                         <button class="dim-button" id="increaseHeight">+</button>
                     </div>
                 </div>
-                <div id="pixelGrid" style="justify-content: center;max-width: 0%;" class="pixel-grid mb-4">
-                  
+                <div style="display: flex;align-items: center;">
+                  <div id="pixelGrid" style="justify-content: center;max-width: 0%;" class="pixel-grid mb-4">
+
+                  </div>
+                  <div id="matrix-move-div" style="display: none;">
+                    <button style="width: 59px;height: 60px;padding-left: 2px;font-size: 39px;border-radius: 10px;" onclick="shiftMatrix('','up')" class="darkbuttonboxes">🢁</button>
+                    <div style="display: flex;">
+                      <button style="width: 59px;height: 57px;padding-left: 1px;font-size: 39px;border-radius: 10px;" onclick="shiftMatrix('left','')" class="darkbuttonboxes">🢀</button>
+                      <button style="width: 59px;height: 57px;padding-left: 1px;font-size: 39px;border-radius: 10px;" onclick="alertMessage(`🧪 You already unlocked this..`)" class="darkbuttonboxes">🧪</button>
+                      <button style="width: 59px;height: 57px;padding-left: 1px;font-size: 39px;border-radius: 10px;" onclick="shiftMatrix('right','')" class="darkbuttonboxes">🢂</button>
+                    </div>
+                    <button style="width: 59px;height: 60px;padding-left: 2px;font-size: 39px;border-radius: 10px;padding-top: 5px;" onclick="shiftMatrix('','down')" class="darkbuttonboxes">🢃</button>
+                    
+                    <div style="font-size: 12px;color: rgb(131, 131, 131);">
+                      Pixels that are moved outside<br>the grid might be lost. Caution!
+                    </div>
+                  </div>
                 </div>
 
                 <h3 class="text-lg font-semibold text-gray-700 mb-2 darktext">Selected Character: <span id="selectedCharDisplay" class="text-blue-600 darktext">None</span></h3>
@@ -137,15 +158,9 @@
 
                 <button id="exportButton" class="action-button darkbuttonboxes">Export Font Data</button>
                 <textarea id="exportOutput" class="export-output resize-none darktextboxes" rows="10" readonly placeholder="Exported JSON will appear here..."></textarea>
-
-                <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-2 darktext">Import Font Data</h3>
-                <div id="importErrorDebug" role="alert"></div> <textarea id="importInput" class="import-input resize-none darktextboxes" rows="5" placeholder="Paste font data here..."></textarea>
-                <button id="importButton" class="action-button darkbuttonboxes">Import Data</button>
-
                 <div id="generate-image-normal-div">
-                    <hr class="my-4 border-gray-300">
-
-                    <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-2 darktext">Generate Image from Text</h3>
+                    <hr class="my-4 border-gray-300" style="margin: 0px;">
+                    <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-2 darktext" style="margin: 10px;">Generate Image from Text</h3>
                     <input type="text" id="imageTextInput" class="w-full p-2 border rounded darktextboxes" placeholder="Enter text to convert to image...">
 
                     <div class="flex items-center mt-2 mb-4">
@@ -162,8 +177,13 @@
                         Generated image will appear here.
                     </div>
                 </div>
+                <hr class="my-4 border-gray-300" style="margin: 0px;">
+                <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-2 darktext" style="margin: -5px;">Import Font Data</h3>
+                <div id="importErrorDebug" role="alert"></div> <textarea id="importInput" class="import-input resize-none darktextboxes" rows="5" placeholder="Paste font data here..."></textarea>
+                <button id="importButton" class="action-button darkbuttonboxes">Import Data</button>
                 
-                <hr class="my-4 border-gray-300"> <button id="deleteDataButton" class="action-button darkbuttonboxes">Delete All Data & Restart (Double-Click)</button>
+                <hr class="my-4 border-gray-300" style="margin: 0px;">
+                <button id="deleteDataButton" class="action-button darkbuttonboxes">Delete All Data & Restart (Double-Click)</button>
             </div>
         </div>
         <br>
@@ -219,6 +239,7 @@
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5185973148525065" crossorigin="anonymous"></script>
         <script src="script.js"></script>
         <script src="resources.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
     </div>
 </body>
 </html>
