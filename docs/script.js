@@ -505,7 +505,7 @@ function formatExportData(data,keepColumns = false) {
     */
     let pixelSpacing = isNull(fontProps.PixelSpacing) ? 1 : fontProps.PixelSpacing;
     output += `  "${fontIdentifierInputDiv.value}": {\n`; // Start font key object
-    output += `    "Disabled": ${fontProps.Disabled},\n`;
+    output += `    "Disabled": ${typeof fontProps.Disabled != "boolean" ? false : fontProps.Disabled},\n`;
     output += `    "Name": "${fontNameInputDiv.value}",\n`;
     output += `    "Height": ${fontProps.Height},\n`;
     output += `    "Width": ${fontProps.Width},\n`;
@@ -680,7 +680,7 @@ function importData(dataToImport) { // Named function for import
         // Initialize CharacterWidths as an empty object for new derived widths
         fontData = {
             [currentFontKey]: {
-                Disabled: importedFontData[currentFontKey].Disabled,
+                Disabled: typeof importedFontData[currentFontKey].Disabled != "boolean" ? false : importedFontData[currentFontKey].Disabled,
                 Name: importedFontData[currentFontKey].Name,
                 Height: Math.min(MAX_FONT_HEIGHT, importedFontData[currentFontKey].Height), // Clamp imported height
                 Width: Math.min(MAX_FONT_WIDTH, importedFontData[currentFontKey].Width),   // Clamp imported width

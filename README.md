@@ -1,1 +1,1 @@
-## Vitis us on https://alonsoaliaga.com/font-creator
+## Visit us on https://alonsoaliaga.com/font-creator
