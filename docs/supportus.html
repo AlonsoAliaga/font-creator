@@ -33,7 +33,7 @@
   <div style="width: 100%;" id="content">
     <button style="height: 80px;width: 100%;font-size: 20px;border-radius: 0px;background-color: #ff8d00;font-weight: bold;" class="darkbuttonboxes" id="support-button">Loading..</button>
   </div><br>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5185973148525065"
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5185973148525065"
     crossorigin="anonymous"></script>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({
@@ -41,7 +41,7 @@
     //   enable_page_level_ads: true,
       overlays: { bottom: true },          // banner “anchor” en la parte inferior :contentReference[oaicite:4]{index=4}
       vignette: true                    // si quieres también intersticiales
-    });
+    }); -->
   </script>
   <script>
     let siteUniqueId;
@@ -130,7 +130,17 @@
           window.opener.postMessage({load:96,uuid:siteUniqueId,uuid2:siteUniqueId2},"*");
       });
       function initializeEditor() {
-        populate();
+        setTimeout(()=>{
+          let div = document.createElement("div");
+          let h2 = document.createElement("h2");
+          h2.style.cssText = "font-size: 15px ;text-align: center;";
+          h2.innerHTML = `⛔ This site doesn't contain any ad from <a href="https://www.google.com" rel="noopener" target="_blank">Google</a>!<br><br>`
+          div.appendChild(h2);
+          document.body.appendChild(div);
+        },0);
+        setTimeout(()=>{
+          populate();
+        },150);
         const button = document.getElementById("support-button");
         if(!button) return;
         if(adBlockEnabled) {
