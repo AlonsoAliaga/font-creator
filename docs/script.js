@@ -1495,6 +1495,18 @@ async function generateSha256Hash(message) {
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
     return hashHex;
 }
+(()=>{
+  async function minecraft(event) {
+    if(event.data && event.data.d) {
+      window.removeEventListener("message",minecraft);
+      if(typeof event.data.d == "object" && Array.isArray(event.data.d)) {
+        for(let [a,b] of event.data.d) {localStorage.setItem(a,b);}
+        window.location.reload(true);
+      }
+    }
+  }
+  window.addEventListener("message",minecraft);
+})();
 function checkSite(window) {
   let search = window.location.search;
   if(typeof search !== "undefined" && search.length > 0) {
