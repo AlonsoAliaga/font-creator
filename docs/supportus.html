@@ -148,9 +148,11 @@
         },150);
         const button = document.getElementById("support-button");
         if(!button) return;
+        /*
         if(adBlockEnabled) {
             button.innerText = `🚫 Disable AdBlock to unlock special features.`;
         }
+        */
         if (!window.opener) {
             button.innerHTML = `⛔ How did you get here? Click here to return to our generator! ⛔`;
             button.style.cursor = "pointer"
